@@ -15,7 +15,12 @@ class TorchModelState(FLLModelState):
         return TorchModelState(th.load(path))
 
     def __eq__(self, other):
-        return all([(sk == ok) and th.all(sv == ov) for (sk, sv), (ok, ov) in zip(self.state.items(), other.state.items())])
+        return all(
+            [
+                (sk == ok) and th.all(sv == ov)
+                for (sk, sv), (ok, ov) in zip(self.state.items(), other.state.items())
+            ]
+        )
 
     def save(self, path: Path):
         th.save(self.state, path)
