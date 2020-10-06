@@ -7,9 +7,9 @@ from pathlib import Path
 class FLLModelState(ABC):
     @classmethod
     @abstractmethod
-    def load_state(cls, path: Path) -> FLLModelState:
+    def load(cls, path: Path) -> FLLModelState:
         pass
 
     @abstractmethod
-    def save_state(self, path: Path):
+    def save(self, path: Path):
         pass

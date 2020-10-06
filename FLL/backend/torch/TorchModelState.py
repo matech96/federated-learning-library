@@ -3,7 +3,7 @@ from typing import Dict
 
 import torch as th
 
-from . import FLLModelState
+from .. import FLLModelState
 
 
 class TorchModelState(FLLModelState):
@@ -11,8 +11,11 @@ class TorchModelState(FLLModelState):
         self.state = state
 
     @classmethod
-    def load_state(cls, path: Path) -> FLLModelState:
+    def load(cls, path: Path) -> FLLModelState:
         return TorchModelState(th.load(path))
 
-    def save_state(self, path: Path):
+    def __eq__(self, other):
+        return all([(sk == ok) and th.all(sv == ov) for (sk, sv), (ok, ov) in zip(self.state.items(), other.state.items())])
+
+    def save(self, path: Path):
         th.save(self.state, path)
