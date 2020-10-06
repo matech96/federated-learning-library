@@ -19,4 +19,3 @@ class TestTorchModelState:
 
         assert state == loaded_state
         assert state2 != loaded_state
-
