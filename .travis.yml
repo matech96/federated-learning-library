@@ -1,16 +1,16 @@
 language: python
-services:
-  - docker
+# services:
+#   - docker
 
-before_install:
-- docker pull matech96/ml-workspace
+# before_install:
+# - docker pull matech96/ml-workspace
 
-# python:
-#   - "pypy3"
-# # command to install dependencies
-# install:
-#   - pip install -r requirements.txt
+python:
+  - "pypy3"
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
 # command to run tests
 script:
-  - docker run matech96/ml-workspace /bin/sh -c "flake8 --exclude=venv* --statistics"
-  - docker run matech96/ml-workspace /bin/sh -c "pytest"
+  - flake8 --exclude=venv* --statistics
+  # - pytest
