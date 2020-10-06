@@ -1,1 +1,1 @@
-from FLLModelState import FLLModelState
+from FLLModelState import FLLModelState  # noqa: F401
