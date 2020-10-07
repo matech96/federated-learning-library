@@ -6,6 +6,7 @@ python:
 install:
   - pip install -r requirements.txt
   - pip install codecov
+  - pip install pytest-cov
 # command to run tests
 script:
   # - flake8 --exclude=venv* --statistics

@@ -7,6 +7,3 @@ class Simple(nn.Module):
 
         self.conv = nn.Conv2d(3, 3, 3, 1)
         self.fc = nn.Linear(10, 10)
-
-    def forward(self, x):
-        raise NotImplementedError()
