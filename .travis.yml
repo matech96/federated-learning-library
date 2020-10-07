@@ -9,6 +9,6 @@ install:
 # command to run tests
 script:
   # - flake8 --exclude=venv* --statistics
-  - coverage pytest
+  - pytest -v --cov
 after_success:
   - codecov
