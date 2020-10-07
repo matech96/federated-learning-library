@@ -1,29 +1,11 @@
 language: python
-cache:
-  directories:
-  - docker_images
-
-before_install:
-- docker load -i docker_images/images.tar || docker pull matech96/ml-workspace
-
-before_cache:
-- test -f docker_images/images.tar || docker save -o docker_images/images.tar matech96/ml-workspace
-# cache: pip
-git:
-  clone: false
-services:
-  - docker
-
-# before_install:
-# - docker pull matech96/ml-workspace
-
-# python:
-#   - "pypy3"
+cache: pip
+python:
+  - "pypy3"
 # command to install dependencies
-# install:
-#   - pip install -r requirements.txt
+install:
+  - pip install -r requirements.txt
 # command to run tests
 script:
-  - docker run matech96/ml-workspace /bin/sh -c "git clone https://github.com/matech96/federated-learning-library.git; pytest"
   # - flake8 --exclude=venv* --statistics
-  # - pytest
+  - pytest
