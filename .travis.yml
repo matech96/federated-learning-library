@@ -7,7 +7,7 @@ before_install:
 - docker load -i docker_images/images.tar || docker pull matech96/ml-workspace
 
 before_cache:
-- docker save -o docker_images/images.tar $(docker images -a -q)
+- test -f docker_images/images.tar || docker save -o docker_images/images.tar matech96/ml-workspace
 # cache: pip
 git:
   clone: false
