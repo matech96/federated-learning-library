@@ -8,7 +8,7 @@ install:
 # command to run tests
 script:
   - pytest -v --cov
-  - mypy FLL
+  - mypy fll
   - pylint --fail_under=10 fll
 after_success:
   - codecov
