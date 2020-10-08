@@ -4,11 +4,11 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 
 
-class FLLOptState(ABC):
+class AbstractModelState(ABC):
     # pytype: disable=bad-return-type
     @classmethod
     @abstractmethod
-    def load(cls, path: Path) -> FLLOptState:
+    def load(cls, path: Path) -> AbstractModelState:
         pass
 
     @abstractmethod

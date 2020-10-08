@@ -1,17 +1,17 @@
 from torch import nn
 
-from .. import FLLModel, FLLModelState
-from . import TorchModelState
+from .torch_model_state import TorchModelState
+from .. import AbstractModel, AbstractModelState
 
 
-class TorchModel(FLLModel):
+class TorchModel(AbstractModel):
     def __init__(self, model: nn.Module):
         self.model = model
 
-    def get_state(self) -> FLLModelState:
+    def get_state(self) -> AbstractModelState:
         return TorchModelState(self.model.state_dict())
 
-    def load_state(self, state: FLLModelState):
+    def load_state(self, state: AbstractModelState):
         if not isinstance(state, TorchModelState):
             raise ValueError()
         self.model.load_state_dict(state.state)
