@@ -9,6 +9,6 @@ install:
 script:
   - pytest -v --cov
   - mypy fll
-  - pylint-fail-under --fail_under=10.0 fll
+  - pylint-fail-under --fail_under 10.0 fll
 after_success:
   - codecov
