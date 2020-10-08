@@ -16,8 +16,7 @@ class TorchOptState(AbstractOptState):
         return TorchOptState(th.load(path))
 
     def __eq__(self, other: "TorchOptState"):
-        return state_dict_eq(self.state, \
-         other.state)
+        return state_dict_eq(self.state, other.state)
 
     def save(self, path: Path):
         th.save(self.state, path)
