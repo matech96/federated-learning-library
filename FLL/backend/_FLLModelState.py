@@ -5,6 +5,7 @@ from pathlib import Path
 
 
 class FLLModelState(ABC):
+    # pytype: disable=bad-return-type
     @classmethod
     @abstractmethod
     def load(cls, path: Path) -> FLLModelState:
@@ -13,3 +14,5 @@ class FLLModelState(ABC):
     @abstractmethod
     def save(self, path: Path):
         pass
+
+    # pytype: enable=bad-return-type

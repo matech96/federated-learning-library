@@ -1,5 +1,4 @@
 language: python
-# cache: pip
 python:
   - "3.7"
 # command to install dependencies
@@ -7,9 +6,11 @@ install:
   - pip install -r requirements.txt
   - pip install codecov
   - pip install pytest-cov
+  - pip install mypy
 # command to run tests
 script:
   # - flake8 --exclude=venv* --statistics
   - pytest -v --cov
+  - mypy FLL
 after_success:
   - codecov

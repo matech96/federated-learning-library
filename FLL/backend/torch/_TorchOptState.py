@@ -12,7 +12,7 @@ class TorchOptState(FLLOptState):
 
     @classmethod
     def load(cls, path: Path) -> FLLOptState:
-        return FLLOptState(th.load(path))
+        return TorchOptState(th.load(path))
 
     def __eq__(self, other):
         return all(
