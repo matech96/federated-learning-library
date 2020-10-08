@@ -4,11 +4,11 @@ python:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
-  - pip install codecov pytest-cov mypy pylint-fail-under
+  - pip install codecov pytest-cov mypy 
 # command to run tests
 script:
   - pytest -v --cov
   - mypy FLL
-  - pylint-fail-under --fail_under 10.0 fll
+  - pylint --fail_under=10 fll
 after_success:
   - codecov
