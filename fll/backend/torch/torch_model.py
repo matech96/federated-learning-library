@@ -12,6 +12,5 @@ class TorchModel(AbstractModel):
         return TorchModelState(self.model.state_dict())
 
     def load_state(self, state: AbstractModelState):
-        if not isinstance(state, TorchModelState):
-            raise ValueError()
+        assert isinstance(state, TorchModelState)
         self.model.load_state_dict(state.state)

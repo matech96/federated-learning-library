@@ -15,7 +15,8 @@ class TorchModelState(AbstractModelState):
     def load(cls, path: Path) -> AbstractModelState:
         return TorchModelState(th.load(path))
 
-    def __eq__(self, other: "TorchModelState"):
+    def __eq__(self, other):
+        assert isinstance(other, TorchModelState)
         return state_dict_eq(self.state, other.state)
 
     def save(self, path: Path):

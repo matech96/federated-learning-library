@@ -15,7 +15,8 @@ class TorchOptState(AbstractOptState):
     def load(cls, path: Path) -> AbstractOptState:
         return TorchOptState(th.load(path))
 
-    def __eq__(self, other: "TorchOptState"):
+    def __eq__(self, other):
+        assert isinstance(other, TorchOptState)
         return state_dict_eq(self.state, other.state)
 
     def save(self, path: Path):
