@@ -5,7 +5,6 @@ from pathlib import Path
 
 
 class AbstractModelState(ABC):
-    # pytype: disable=bad-return-type
     @classmethod
     @abstractmethod
     def load(cls, path: Path) -> AbstractModelState:
@@ -14,5 +13,3 @@ class AbstractModelState(ABC):
     @abstractmethod
     def save(self, path: Path):
         pass
-
-    # pytype: enable=bad-return-type
