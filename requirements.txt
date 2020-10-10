@@ -11,5 +11,6 @@ tensorflow==2.2.0
 # holoviews==1.12.7
 Keras==2.3.1
 sphinx-autoapi==1.5.1
+sphinx-rtd-theme==0.5.0
 # matplotlib==3.1.1
 # scikit-learn==0.22.1
