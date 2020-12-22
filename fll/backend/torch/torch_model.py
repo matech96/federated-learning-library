@@ -11,5 +11,6 @@ class TorchModel(AbstractModel):
     def get_state(self) -> AbstractModelState:
         return TorchModelState(self.model.state_dict())
 
-    def load_state(self, state: "TorchModelState"):  # type: ignore[override]
+    def load_state(self, state: AbstractModelState):
+        assert isinstance(state, TorchModelState)
         self.model.load_state_dict(state.state)
