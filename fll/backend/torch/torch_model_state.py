@@ -15,7 +15,8 @@ class TorchModelState(AbstractModelState):
     def load(cls, path: Path) -> AbstractModelState:
         return TorchModelState(th.load(path))
 
-    def __eq__(self, other: AbstractModelState):
+    # noinspection PyTypeHints
+    def __eq__(self, other: AbstractModelState):  # type: ignore[override]
         assert isinstance(other, TorchModelState)
         return state_dict_eq(self.state, other.state)
 

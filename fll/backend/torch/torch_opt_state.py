@@ -15,7 +15,8 @@ class TorchOptState(AbstractOptState):
     def load(cls, path: Path) -> AbstractOptState:
         return TorchOptState(th.load(path))
 
-    def __eq__(self, other: AbstractOptState):
+    # noinspection PyTypeHints
+    def __eq__(self, other: AbstractOptState) -> bool:  # type: ignore[override]
         assert isinstance(other, TorchOptState)
         return state_dict_eq(self.state, other.state)
 
