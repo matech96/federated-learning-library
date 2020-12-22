@@ -8,7 +8,7 @@ class TestTorchModel:
         m = TorchModel(models.Simple())
         m2 = TorchModel(models.Simple())
         assert m.get_state() == m.get_state()
-        assert m.get_state() == m2.get_state()  # TODO !=
+        assert m.get_state() != m2.get_state()
 
     def test_load_save(self):
         m = TorchModel(models.Simple())
