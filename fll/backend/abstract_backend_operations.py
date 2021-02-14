@@ -12,9 +12,9 @@ from .abstract_metric import AbstractMetric
 
 
 class AbstractBackendOperations(ABC):
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def train_epoch(cls, model: AbstractModel, opt: AbstractOpt, loss: AbstractLoss,  # noqa: R0913
+    def train_epoch(model: AbstractModel, opt: AbstractOpt, loss: AbstractLoss,  # noqa: R0913
                     data: AbstractDataLoader, metrics: List[AbstractMetric]) -> Dict[str, float]:  # noqa: R0913
         """Trains the model for 1 round.
 
@@ -26,9 +26,9 @@ class AbstractBackendOperations(ABC):
         :return: Dictionary, where the key is the name of the metric and the value is a float or int.
         """
 
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def eval(cls, model: AbstractModel, data: AbstractDataLoader, metrics: List[AbstractMetric]) -> Dict[str, float]:
+    def eval(model: AbstractModel, data: AbstractDataLoader, metrics: List[AbstractMetric]) -> Dict[str, float]:
         """Evaluates the model on the provided data.
 
         :param model: Model to be evaluated.
@@ -37,9 +37,9 @@ class AbstractBackendOperations(ABC):
         :return: Dictionary, where the key is the name of the metric and the value is a float or int.
         """
 
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def cumulative_avg_model_state(cls, state_0: Optional[AbstractModelState], state_1: AbstractModelState,
+    def cumulative_avg_model_state(state_0: Optional[AbstractModelState], state_1: AbstractModelState,
                                    n_states_0: int) -> AbstractModelState:
         """This function is useful to calculate the average of many model states, but without needing to keep all of
         them in memory. With this function you only need two model states simultaneously to calculate the average.
@@ -50,9 +50,9 @@ class AbstractBackendOperations(ABC):
         :return: The uniform average of all the states in state_0 and state_1.
         """
 
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def cumulative_avg_opt_state(cls, state_0: Optional[AbstractOptState], state_1: AbstractOptState,
+    def cumulative_avg_opt_state(state_0: Optional[AbstractOptState], state_1: AbstractOptState,
                                  n_states_0: int) -> AbstractOptState:
         """This function is useful to calculate the average of many optimizer states, but without needing to keep all of
         them in memory. With this function you only need two optimizer states simultaneously to calculate the average.
