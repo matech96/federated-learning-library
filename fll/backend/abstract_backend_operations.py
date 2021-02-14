@@ -10,7 +10,7 @@ class AbstractBackendOperations(ABC):
     @classmethod
     @abstractmethod
     def train_epoch(cls, model: AbstractModel, opt: AbstractOpt, loss: AbstractLoss,
-                    data: AbstractDataLoader, metrics: List[AbstractMetric]) -> Dict[str, float]:
+                    data: AbstractDataLoader, metrics: List[AbstractMetric]) -> Dict[str, float]: # noqa: R0913
         """Trains the model for 1 round.
 
         :param model: The model to be trained.
