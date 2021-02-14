@@ -33,7 +33,7 @@ jobs:
 #        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Lint with PyLint
       run: |
-        pylint --disable-msg=R0903 --fail-under=10.0 fll
+        pylint --fail-under=10.0 fll
     - name: Type testing
       run: |
         mypy fll
