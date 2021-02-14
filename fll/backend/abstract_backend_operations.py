@@ -2,15 +2,20 @@ from abc import ABC, abstractmethod
 
 from typing import List, Dict, Optional
 
-from ..backend import AbstractModel, AbstractModelState, AbstractOpt, AbstractOptState, AbstractLoss, \
-    AbstractDataLoader, AbstractMetric
+from .abstract_model import AbstractModel
+from .abstract_model_state import AbstractModelState
+from .abstract_opt import AbstractOpt
+from .abstract_opt_state import AbstractOptState
+from .abstract_loss import AbstractLoss
+from .abstract_data_loader import AbstractDataLoader
+from .abstract_metric import AbstractMetric
 
 
 class AbstractBackendOperations(ABC):
     @classmethod
     @abstractmethod
-    def train_epoch(cls, model: AbstractModel, opt: AbstractOpt, loss: AbstractLoss,
-                    data: AbstractDataLoader, metrics: List[AbstractMetric]) -> Dict[str, float]: # noqa: R0913
+    def train_epoch(cls, model: AbstractModel, opt: AbstractOpt, loss: AbstractLoss,  # noqa: R0913
+                    data: AbstractDataLoader, metrics: List[AbstractMetric]) -> Dict[str, float]:  # noqa: R0913
         """Trains the model for 1 round.
 
         :param model: The model to be trained.
