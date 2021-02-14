@@ -12,7 +12,8 @@ class DataSet(ABC):
                  test_loader: AbstractDataLoader):
         """
         Instantiates a DataSet.
-        :param train_loader_list: List of instances of AbstractDataLoader. Each loader in the list will be associated with a nique client.
+        :param train_loader_list: List of instances of AbstractDataLoader. Each loader in the list will be associated
+        with a nique client.
         :param eval_loader: AbstractDataLoader for evaluation.
         :param test_loader: AbstractDataLoader for testing.
         """
@@ -24,8 +25,8 @@ class DataSet(ABC):
     @abstractmethod
     def is_learning(cls, metrics: Dict[str, float]) -> bool:
         """
-        From the metrics, it determines if the model is learning. For example in classification, if the accuracy is higher, than random accuracy.
+        From the metrics, it determines if the model is learning. For example in classification, if the accuracy is
+        higher, than random accuracy.
         :param metrics: Dictionary, where the key is the name of the metric and the value is a float or int.
         :return: True, if the model is performing better, than random weights.
         """
-        pass
