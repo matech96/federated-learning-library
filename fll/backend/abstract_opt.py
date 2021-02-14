@@ -10,8 +10,7 @@ class AbstractOpt(ABC):
     def get_state(self) -> AbstractOptState:
         """Returns the state of the optimizer.
 
-        Returns:
-            AbstractOptState: State of the optimizer
+        :return: State of the optimizer
         """
 
     @abstractmethod

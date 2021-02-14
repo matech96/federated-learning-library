@@ -10,8 +10,7 @@ class AbstractModel(ABC):
     def get_state(self) -> AbstractModelState:
         """Returns the state of the model.
 
-        Returns:
-            AbstractModelState: State of the model
+        :return: State of the model
         """
 
     @abstractmethod

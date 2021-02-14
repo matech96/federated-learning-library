@@ -10,17 +10,13 @@ class AbstractOptState(ABC):
     def load(cls, path: Path) -> AbstractOptState:
         """Loads the state from the disk.
 
-        Args:
-            path (Path): The location of the state on the disk.
-
-        Returns:
-            AbstractOptState: the loaded state
+        :param path: The location of the state on the disk.
+        :return: the loaded state
         """
 
     @abstractmethod
     def save(self, path: Path):
         """Saves the state to the disk.
 
-        Args:
-            path (Path): Path to save location.
+        :param path: Path to save location.
         """
