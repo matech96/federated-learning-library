@@ -8,6 +8,7 @@ from .utils import state_dict_eq
 
 
 class TorchOptState(AbstractOptState):
+    """An implementation of AbstractOpt for Torch."""
     def __init__(self, state: Dict):
         self.state = state
 

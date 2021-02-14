@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Dict
 
 import torch as th
 
@@ -8,7 +7,8 @@ from .utils import state_dict_eq
 
 
 class TorchModelState(AbstractModelState):
-    def __init__(self, state: Dict):
+    """An implementation of AbstractModelState for Torch."""
+    def __init__(self, state: dict):
         self.state = state
 
     @classmethod

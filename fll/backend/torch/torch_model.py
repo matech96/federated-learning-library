@@ -5,6 +5,7 @@ from .. import AbstractModel, AbstractModelState
 
 
 class TorchModel(AbstractModel):
+    """An implementation of AbstractModel for Torch."""
     def __init__(self, model: nn.Module):
         self.model = model
 

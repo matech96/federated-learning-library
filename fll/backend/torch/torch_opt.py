@@ -5,6 +5,7 @@ from .. import AbstractOptState, AbstractOpt
 
 
 class TorchOpt(AbstractOpt):
+    """An implementation of AbstractOpt for Torch."""
     def __init__(self, opt: optim.Optimizer):
         self.opt = opt
 
