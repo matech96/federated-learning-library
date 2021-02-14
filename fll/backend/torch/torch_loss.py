@@ -1,5 +1,6 @@
-import torch as th
 from typing import Callable
+
+import torch as th
 
 from .. import AbstractLoss
 
