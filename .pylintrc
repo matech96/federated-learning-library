@@ -5,3 +5,6 @@ disable=C0114,C0115,C0116,R0903 # missing-module-docstring
 [TYPECHECK]
 ignored-modules=numpy,torch
 ignored-classes=numpy,torch
+
+[FORMAT]
+max-line-length=120
