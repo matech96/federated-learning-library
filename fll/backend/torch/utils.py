@@ -59,7 +59,7 @@ def tensor_container_element_eq(value1: Union[dict, list, th.Tensor, Any],
     if isinstance(value1, list) and isinstance(value2, list):
         return tensor_list_eq(value1, value2)
     if isinstance(value1, th.Tensor) and isinstance(value2, th.Tensor):
-        is_equal = th.all(th.tensor(value1 == value2)).item()
+        is_equal = th.all(th.Tensor(value1 == value2)).item()
         return cast(bool, is_equal)
 
     return value1 == value2
