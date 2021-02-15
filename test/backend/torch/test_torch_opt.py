@@ -1,6 +1,5 @@
-from copy import deepcopy
 import torch as th
-from fll.backend.torch import TorchModel, TorchOpt
+from fll.backend.torch import TorchOpt
 
 from . import util
 
