@@ -10,7 +10,8 @@ from .abstract_opt_state import AbstractOptState
 
 
 class AbstractBackendFactory(ABC):
-    """ A factory, that puts the deep learning framework specific object into a container, that can be freely passed around in the rest of the code.
+    """ A factory, that puts the deep learning framework specific object into a container, that can be freely passed
+    around in the rest of the code.
 
     .. seealso:: AbstractBackendOperations
     """
