@@ -13,7 +13,7 @@ class DataSet(ABC):
         """
         Instantiates a DataSet.
         :param train_loader_list: List of instances of AbstractDataLoader. Each loader in the list will be associated
-        with a nique client.
+        with a unique client.
         :param eval_loader: AbstractDataLoader for evaluation.
         :param test_loader: AbstractDataLoader for testing.
         """
