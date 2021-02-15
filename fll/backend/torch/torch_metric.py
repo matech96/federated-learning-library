@@ -6,5 +6,7 @@ from .. import AbstractMetric
 
 class TorchMetric(AbstractMetric):
     """An implementation of AbstractMetric for Torch."""
-    def __init__(self, metric: Callable[[th.Tensor, th.Tensor], th.Tensor]):
+
+    def __init__(self, metric: Callable[[th.Tensor, th.Tensor], th.Tensor], name: str):
+        super().__init__(name)
         self.metric = metric

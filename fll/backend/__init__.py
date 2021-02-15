@@ -1,3 +1,4 @@
+from .abstract_backend_factory import AbstractBackendFactory  # noqa: F401
 from .abstract_backend_operations import AbstractBackendOperations  # noqa: F401
 from .abstract_data_loader import AbstractDataLoader  # noqa: F401
 from .abstract_loss import AbstractLoss  # noqa: F401
