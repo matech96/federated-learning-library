@@ -26,3 +26,11 @@ class SimpleModel(nn.Module):
 
     def forward(self, x):
         return self.fc(x)
+
+
+class SimpleDataSet(th.utils.data.Dataset):
+    def __getitem__(self, index):
+        return index
+
+    def __len__(self):
+        return 10

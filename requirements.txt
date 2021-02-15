@@ -3,6 +3,7 @@ attrs==19.3.0 # tensorflow-federated
 # pytest==6.1.1
 comet-ml==3.3.3
 torch==1.7.1
+# torchvision==0.1.8
 # tensorflow-federated==0.14.0
 # tensorflow-datasets==2.0.0
 # tensorflow==2.2.0

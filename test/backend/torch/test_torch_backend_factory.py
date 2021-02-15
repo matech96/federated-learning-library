@@ -8,6 +8,12 @@ from . import util
 
 
 class TestTorchBackendFactory:
+    def test_data_loader(self, tmp_path):
+        data_loader = th.utils.data.DataLoader(util.SimpleDataSet())
+        warped_data_loader = TorchBackendFactory.create_data_loader(data_loader)
+        get_first = lambda x: next(iter(x))
+        assert get_first(data_loader) == get_first(warped_data_loader.data_loader)
+
     def test_loss(self):
         mse = nn.MSELoss()
         name = "mse"
