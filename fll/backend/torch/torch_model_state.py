@@ -3,7 +3,7 @@ from pathlib import Path
 import torch as th
 
 from .. import AbstractModelState
-from .utils import state_dict_eq
+from .utils import tensor_dict_eq
 
 
 class TorchModelState(AbstractModelState):
@@ -15,10 +15,9 @@ class TorchModelState(AbstractModelState):
     def load(cls, path: Path) -> AbstractModelState:
         return TorchModelState(th.load(path))
 
-    # noinspection PyTypeHints
-    def __eq__(self, other: AbstractModelState):  # type: ignore[override]
+    def __eq__(self, other):
         assert isinstance(other, TorchModelState)
-        return state_dict_eq(self.state, other.state)
+        return tensor_dict_eq(self.state, other.state)
 
     def save(self, path: Path):
         th.save(self.state, path)

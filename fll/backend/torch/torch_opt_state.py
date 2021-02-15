@@ -4,7 +4,7 @@ from typing import Dict
 import torch as th
 
 from .. import AbstractOptState
-from .utils import state_dict_eq
+from .utils import tensor_dict_eq
 
 
 class TorchOptState(AbstractOptState):
@@ -16,10 +16,9 @@ class TorchOptState(AbstractOptState):
     def load(cls, path: Path) -> AbstractOptState:
         return TorchOptState(th.load(path))
 
-    # noinspection PyTypeHints
-    def __eq__(self, other: AbstractOptState) -> bool:  # type: ignore[override]
+    def __eq__(self, other) -> bool:
         assert isinstance(other, TorchOptState)
-        return state_dict_eq(self.state, other.state)
+        return tensor_dict_eq(self.state, other.state)
 
     def save(self, path: Path):
         th.save(self.state, path)
