@@ -8,3 +8,6 @@ ignored-classes=numpy,torch
 
 [FORMAT]
 max-line-length=120
+
+[SIMILARITIES]
+ignore-imports=yes
