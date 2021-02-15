@@ -7,4 +7,4 @@ class TestTorchLoss:
     def test_name(self):
         name = 'mse'
         loss = TorchLoss(nn.MSELoss(), name)
-        assert loss == name
+        assert loss.name == name
