@@ -5,10 +5,7 @@
 
 Welcome to Federated Learning Library's documentation!
 ======================================================
-.. .. currentmodule:: fll
-
-
-.. .. autosummary::
+.. automodule::fll.data_set
 
 .. toctree::
    :maxdepth: 2

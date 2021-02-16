@@ -10,8 +10,8 @@ class DataSet(ABC):
 
     def __init__(self, train_loader_list: List[AbstractDataLoader], eval_loader: AbstractDataLoader,
                  test_loader: AbstractDataLoader):
-        """
-        Instantiates a DataSet.
+        """Instantiates a DataSet.
+
         :param train_loader_list: List of instances of AbstractDataLoader. Each loader in the list will be associated
         with a unique client.
         :param eval_loader: AbstractDataLoader for evaluation.
@@ -24,9 +24,9 @@ class DataSet(ABC):
     @classmethod
     @abstractmethod
     def is_learning(cls, metrics: Dict[str, float]) -> bool:
-        """
-        From the metrics, it determines if the model is learning. For example in classification, if the accuracy is
+        """From the metrics, it determines if the model is learning. For example in classification, if the accuracy is
         higher, than random accuracy.
+
         :param metrics: Dictionary, where the key is the name of the metric and the value is a float or int.
         :return: True, if the model is performing better, than random weights.
         """
