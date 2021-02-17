@@ -54,7 +54,7 @@ class TorchBackendFactory(AbstractBackendFactory):
     def create_model(cls, model: th.nn.Module) -> TorchModel:
         """Stores the model in an :class:`~TorchModel`.
 
-        :param model: Deep learning framework specific model.
+        :param model: PyTorch model.
         :return: Wrapped model.
         """
         return TorchModel(model)
@@ -63,7 +63,12 @@ class TorchBackendFactory(AbstractBackendFactory):
     def create_model_state(cls, model_state: dict) -> TorchModelState:
         """Stores the model state in an :class:`~TorchModelState`.
 
-        :param model_state: Deep learning framework specific model state.
+        .. doctest::
+            :options: +SKIP
+
+            >>>TorchBackendFactory.create_model_state(model.state_dict())
+
+        :param model_state: PyTorch model state.
         :return: Wrapped model state.
         """
         return TorchModelState(model_state)
@@ -72,7 +77,7 @@ class TorchBackendFactory(AbstractBackendFactory):
     def create_opt(cls, opt: th.optim.Optimizer) -> TorchOpt:
         """Stores the optimizer in an :class:`~TorchOpt`.
 
-        :param opt: Deep learning framework specific optimizer.
+        :param opt: PyTorch optimizer.
         :return: Wrapped optimizer.
         """
         return TorchOpt(opt)
@@ -81,14 +86,19 @@ class TorchBackendFactory(AbstractBackendFactory):
     def create_opt_state(cls, opt_state: dict) -> TorchOptState:
         """Stores the optimizer state in an :class:`~TorchOptState`.
 
-        :param opt_state: Deep learning framework specific optimizer state.
+        .. doctest::
+            :options: +SKIP
+
+            >>>TorchBackendFactory.create_opt_state(opt.state_dict())
+
+        :param opt_state: PyTorch optimizer state.
         :return: Wrapped optimizer state.
         """
         return TorchOptState(opt_state)
 
 
 class TorchDataLoader(AbstractDataLoader):
-    """An implementation of AbstractDataLoader for Torch."""
+    """An implementation of AbstractDataLoader for PyTorch."""
 
     def __init__(self, data_loader: th.utils.data.DataLoader):
         assert isinstance(data_loader, th.utils.data.DataLoader)
@@ -96,7 +106,7 @@ class TorchDataLoader(AbstractDataLoader):
 
 
 class TorchLoss(AbstractLoss):
-    """An implementation of AbstractLoss for Torch."""
+    """An implementation of AbstractLoss for PyTorch."""
 
     def __init__(self, loss: Callable[[th.Tensor, th.Tensor], th.Tensor], name: str):
         super().__init__(name)
@@ -104,7 +114,7 @@ class TorchLoss(AbstractLoss):
 
 
 class TorchMetric(AbstractMetric):
-    """An implementation of AbstractMetric for Torch."""
+    """An implementation of AbstractMetric for PyTorch."""
 
     def __init__(self, metric: Callable[[th.Tensor, th.Tensor], th.Tensor], name: str):
         super().__init__(name)
@@ -112,7 +122,7 @@ class TorchMetric(AbstractMetric):
 
 
 class TorchModel(AbstractModel):
-    """An implementation of AbstractModel for Torch."""
+    """An implementation of AbstractModel for PyTorch."""
 
     def __init__(self, model: nn.Module):
         assert isinstance(model, nn.Module)
@@ -127,7 +137,7 @@ class TorchModel(AbstractModel):
 
 
 class TorchModelState(AbstractModelState):
-    """An implementation of AbstractModelState for Torch."""
+    """An implementation of AbstractModelState for PyTorch."""
 
     def __init__(self, state: dict):
         self.state = state
@@ -145,7 +155,7 @@ class TorchModelState(AbstractModelState):
 
 
 class TorchOpt(AbstractOpt):
-    """An implementation of AbstractOpt for Torch."""
+    """An implementation of AbstractOpt for PyTorch."""
 
     def __init__(self, opt: optim.Optimizer):
         self.opt = opt
@@ -159,7 +169,7 @@ class TorchOpt(AbstractOpt):
 
 
 class TorchOptState(AbstractOptState):
-    """An implementation of AbstractOpt for Torch."""
+    """An implementation of AbstractOpt for PyTorch."""
 
     def __init__(self, state: Dict):
         self.state = state
