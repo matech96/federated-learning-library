@@ -10,12 +10,33 @@ from fll.backend.abstract import AbstractBackendFactory, AbstractDataLoader, Abs
 
 
 class TorchBackendFactory(AbstractBackendFactory):
+    """Puts the PyTorch specific object into a container, that can be freely passed around in the rest of the code.
+
+    """
     @classmethod
     def create_data_loader(cls, data_loader: th.utils.data.DataLoader) -> TorchDataLoader:
+        """Stores the data loader in an :class:`~TorchDataLoader`.
+
+        :param data_loader: Deep learning framework specific data loader.
+        :return: Wrapped data loader.
+        """
         return TorchDataLoader(data_loader)
 
     @classmethod
     def create_loss(cls, loss: Callable[[th.Tensor, th.Tensor], th.Tensor], name: str) -> TorchLoss:
+        """Stores the loss function in an :class:`~TorchLoss`.
+
+        >>> import torch as th
+        >>> from torch import nn
+        >>> from fll.backend.torch import TorchBackendFactory
+        >>> l = TorchBackendFactory.create_loss(nn.MSELoss(), "mse")
+        >>> l.loss(th.tensor([1.0]), th.tensor([1.0]))
+        tensor(0.)
+
+        :param loss: Deep learning framework specific loss function.
+        :param name: Name of the loss function.
+        :return: Wrapped loss function.
+        """
         return TorchLoss(loss, name)
 
     @classmethod
