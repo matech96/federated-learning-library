@@ -38,3 +38,7 @@ jobs:
       run: |
         pytest -v --cov
         codecov
+    - name: Doctest
+      run: |
+        cd docs
+        make doctest
