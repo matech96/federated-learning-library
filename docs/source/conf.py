@@ -30,13 +30,11 @@ author = 'Ákos Gángoly'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary', 'sphinx.ext.viewcode', 'sphinx.ext.intersphinx']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.intersphinx']
 
 # sphinx.ext.autodoc
 autodoc_typehints = 'description'
 autoclass_content = 'both'
-# sphinx.ext.autosummary
-autosummary_generate = True
 # sphinx.ext.intersphinx
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
 
