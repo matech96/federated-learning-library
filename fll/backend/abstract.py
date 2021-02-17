@@ -5,8 +5,8 @@ from typing import List, Dict, Optional
 
 
 class AbstractBackendFactory(ABC):
-    """ A factory, that puts the deep learning framework specific object into a container, that can be freely passed
-    around in the rest of the code.
+    """An abstract factory, that puts the deep learning framework specific object into a container, that can be
+    freely passed around in the rest of the code. Needs to be inherited for a specific framework.
 
     .. seealso:: :class:`~AbstractBackendOperations`
     """
@@ -14,40 +14,77 @@ class AbstractBackendFactory(ABC):
     @classmethod
     @abstractmethod
     def create_data_loader(cls, data_loader) -> AbstractDataLoader:
-        pass
+        """Stores the data loader in an :class:`~AbstractDataLoader`.
+
+        :param data_loader: Deep learning framework specific data loader.
+        :return: Wrapped data loader.
+        """
 
     @classmethod
     @abstractmethod
     def create_loss(cls, loss, name: str) -> AbstractLoss:
-        pass
+        """Stores the loss function in an :class:`~AbstractLoss`.
+
+        :param loss: Deep learning framework specific loss function.
+        :param name: Name of the loss function.
+        :return: Wrapped loss function.
+        """
 
     @classmethod
     @abstractmethod
     def create_metric(cls, metric, name: str) -> AbstractMetric:
-        pass
+        """Stores the metric in an :class:`~AbstractMetric`.
+
+        :param metric: Deep learning framework specific metric.
+        :param name: Name of the metric.
+        :return: Wrapped metric.
+        """
 
     @classmethod
     @abstractmethod
     def create_model(cls, model) -> AbstractModel:
-        pass
+        """Stores the model in an :class:`~AbstractModel`.
+
+        :param model: Deep learning framework specific model.
+        :return: Wrapped model.
+        """
 
     @classmethod
     @abstractmethod
     def create_model_state(cls, model_state) -> AbstractModelState:
-        pass
+        """Stores the model state in an :class:`~AbstractModelState`.
+
+        :param model_state: Deep learning framework specific model state.
+        :return: Wrapped model state.
+        """
 
     @classmethod
     @abstractmethod
     def create_opt(cls, opt) -> AbstractOpt:
-        pass
+        """Stores the optimizer in an :class:`~AbstractOpt`.
+
+        :param opt: Deep learning framework specific optimizer.
+        :return: Wrapped optimizer.
+        """
 
     @classmethod
     @abstractmethod
     def create_opt_state(cls, opt_state) -> AbstractOptState:
-        pass
+        """Stores the optimizer state in an :class:`~AbstractOptState`.
+
+        :param opt_state: Deep learning framework specific optimizer state.
+        :return: Wrapped optimizer state.
+        """
 
 
 class AbstractBackendOperations(ABC):
+    """The deep learning framework specific calculations, that can't be linked to a specific class are collected in
+    this class. Needs to be inherited for a specific framework.
+
+
+    .. seealso:: :class:`~AbstractBackendFactory`
+    """
+
     @staticmethod
     @abstractmethod
     def train_epoch(model: AbstractModel, opt: AbstractOpt, loss: AbstractLoss,  # noqa: R0913
@@ -101,74 +138,124 @@ class AbstractBackendOperations(ABC):
 
 
 class AbstractDataLoader(ABC):
-    """Abstract class for a data loader."""
+    """Abstract class for containing a framework specific data loader. A data loader can yield a batch of data for
+    training or inference. In federated learning, each clients has its own data loader. Needs to be inherited for a
+    specific framework.
 
-    def __init__(self, data_loader):
-        self.data_loader = data_loader
+    .. seealso:: :class:`~AbstractBackendFactory`
+    """
 
 
 class AbstractLoss(ABC):
-    """Abstract class for a loss function."""
+    """Abstract class for containing a framework specific, callable loss function and its name. Needs to be inherited
+    for a specific framework.
+
+    .. seealso:: :class:`~AbstractBackendFactory`
+    """
 
     def __init__(self, name: str):
+        """
+
+        :param name: Name of the loss function.
+        """
         self.name = name
 
 
 class AbstractMetric(ABC):
-    """Abstract class for a metric."""
+    """Abstract class for containing a framework specific, callable metric function. Needs to be inherited for a
+    specific framework.
+
+    .. seealso:: :class:`~AbstractBackendFactory`
+    """
 
     def __init__(self, name: str):
+        """
+
+        :param name: Name of the metric.
+        """
         self.name = name
 
 
 class AbstractModel(ABC):
-    """Abstract class for a model."""
+    """Abstract class for containing a framework specific a model. Needs to be inherited for a specific framework.
+
+    .. seealso:: :class:`~AbstractBackendFactory`
+    """
 
     @abstractmethod
     def get_state(self) -> AbstractModelState:
         """Returns the state of the model.
 
-        :return: State of the model
+        :return: State of the model.
         """
 
     @abstractmethod
     def load_state(self, state: AbstractModelState):
+        """Loads the state of the model.
+
+        :param state: State of the model.
+        """
         pass
 
 
 class AbstractModelState(ABC):
+    """Abstract class for containing a framework specific model state. The model state is a snapshot of the model
+    taken during it's training. The model state doesn't include the optimizer. Needs to be inherited for a specific
+    framework.
+
+    .. seealso:: :class:`~AbstractBackendFactory` :class:`~AbstractOptState`
+    """
     @classmethod
     @abstractmethod
     def load(cls, path: Path) -> AbstractModelState:
-        pass
+        """Loads the model state from a file.
+
+        :param path: Path to the file.
+        :return: A new object with the loaded model state.
+        """
 
     @abstractmethod
     def save(self, path: Path):
-        pass
+        """Save to a file.
+
+        :param path: Path to the file.
+        """
 
 
 class AbstractOpt(ABC):
-    """Abstract class for an optimizer."""
+    """Abstract class for containing a framework specific optimizer. Needs to be inherited for a specific framework.
+
+    .. seealso:: :class:`~AbstractBackendFactory`
+    """
 
     @abstractmethod
     def get_state(self) -> AbstractOptState:
         """Returns the state of the optimizer.
 
-        :return: State of the optimizer
+        :return: State of the optimizer.
         """
 
     @abstractmethod
     def load_state(self, state: AbstractOptState):
-        pass
+        """Loads the state of the optimizer.
+
+        :return: State of the optimizer.
+        """
 
 
 class AbstractOptState(ABC):
+    """Abstract class for containing a framework specific optimizer state. The optimizer state is a snapshot of the
+    optimizer taken during training. In the case of momentum optimizer, the optimizer state is the momentum value.
+    Needs to be inherited for a specific framework.
+
+    .. seealso:: :class:`~AbstractBackendFactory` :class:`~AbstractModelState`
+    """
     @classmethod
     @abstractmethod
     def load(cls, path: Path) -> AbstractOptState:
         """Loads the state from the disk.
 
-        :param path: The location of the state on the disk.
+        :param path: Path to the file.
         :return: the loaded state
         """
 
@@ -176,5 +263,5 @@ class AbstractOptState(ABC):
     def save(self, path: Path):
         """Saves the state to the disk.
 
-        :param path: Path to save location.
+        :param path: Path to the file.
         """

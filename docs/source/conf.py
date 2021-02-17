@@ -34,7 +34,7 @@ master_doc = 'index'
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.intersphinx']
 
 # sphinx.ext.autodoc
-autodoc_typehints = 'description'
+# autodoc_typehints = 'description'
 autoclass_content = 'both'
 # sphinx.ext.intersphinx
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
