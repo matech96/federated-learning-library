@@ -8,7 +8,7 @@ class AbstractBackendFactory(ABC):
     """ A factory, that puts the deep learning framework specific object into a container, that can be freely passed
     around in the rest of the code.
 
-    .. seealso:: AbstractBackendOperations
+    .. seealso:: :class:`~AbstractBackendOperations`
     """
 
     @classmethod
