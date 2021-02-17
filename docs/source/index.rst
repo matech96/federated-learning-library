@@ -6,12 +6,15 @@
 Welcome to Fll's documentation!
 ===============================
 
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   backend
-   backend_torch
+   fll/fll
+   fll/fll.backend
+..   backend
+..   backend_torch
 
 Indices and tables
 ==================

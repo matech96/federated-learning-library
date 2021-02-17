@@ -15,6 +15,9 @@ import sys
 
 sys.path.insert(0, os.path.abspath('../..'))
 
+# Generate API
+os.system("sphinx-apidoc -o source/fll ../fll -f")
+
 # -- Project information -----------------------------------------------------
 
 project = 'Fll'
@@ -27,9 +30,14 @@ author = 'Ákos Gángoly'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.intersphinx']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.autosummary', 'sphinx.ext.viewcode', 'sphinx.ext.intersphinx']
+
+# sphinx.ext.autodoc
 autodoc_typehints = 'description'
 autoclass_content = 'both'
+# sphinx.ext.autosummary
+autosummary_generate = True
+# sphinx.ext.intersphinx
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
 
 # Add any paths that contain templates here, relative to this directory.
@@ -45,7 +53,7 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = "sphinx_rtd_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
