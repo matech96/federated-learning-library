@@ -195,7 +195,6 @@ class AbstractModel(ABC):
 
         :param state: State of the model.
         """
-        pass
 
 
 class AbstractModelState(ABC):

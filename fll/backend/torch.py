@@ -13,6 +13,7 @@ class TorchBackendFactory(AbstractBackendFactory):
     """Puts the PyTorch specific object into a container, that can be freely passed around in the rest of the code.
 
     """
+
     @classmethod
     def create_data_loader(cls, data_loader: th.utils.data.DataLoader) -> TorchDataLoader:
         """Stores the data loader in an :class:`~TorchDataLoader`.
@@ -33,7 +34,7 @@ class TorchBackendFactory(AbstractBackendFactory):
         >>> l.loss(th.tensor([1.0]), th.tensor([1.0]))
         tensor(0.)
 
-        :param loss: Deep learning framework specific loss function.
+        :param loss: PyTorch loss function.
         :param name: Name of the loss function.
         :return: Wrapped loss function.
         """
@@ -41,22 +42,48 @@ class TorchBackendFactory(AbstractBackendFactory):
 
     @classmethod
     def create_metric(cls, metric: Callable[[th.Tensor, th.Tensor], th.Tensor], name: str) -> TorchMetric:
+        """Stores the metric in an :class:`~TorchMetric`.
+
+        :param metric: Metric, created using PyTorch.
+        :param name: Name of the metric.
+        :return: Wrapped metric.
+        """
         return TorchMetric(metric, name)
 
     @classmethod
     def create_model(cls, model: th.nn.Module) -> TorchModel:
+        """Stores the model in an :class:`~TorchModel`.
+
+        :param model: Deep learning framework specific model.
+        :return: Wrapped model.
+        """
         return TorchModel(model)
 
     @classmethod
     def create_model_state(cls, model_state: dict) -> TorchModelState:
+        """Stores the model state in an :class:`~TorchModelState`.
+
+        :param model_state: Deep learning framework specific model state.
+        :return: Wrapped model state.
+        """
         return TorchModelState(model_state)
 
     @classmethod
     def create_opt(cls, opt: th.optim.Optimizer) -> TorchOpt:
+        """Stores the optimizer in an :class:`~TorchOpt`.
+
+        :param opt: Deep learning framework specific optimizer.
+        :return: Wrapped optimizer.
+        """
         return TorchOpt(opt)
 
     @classmethod
     def create_opt_state(cls, opt_state: dict) -> TorchOptState:
+        """Stores the optimizer state in an :class:`~TorchOptState`.
+
+        :param opt_state: Deep learning framework specific optimizer state.
+        :return: Wrapped optimizer state.
+        """
         return TorchOptState(opt_state)
 
 
@@ -65,7 +92,7 @@ class TorchDataLoader(AbstractDataLoader):
 
     def __init__(self, data_loader: th.utils.data.DataLoader):
         assert isinstance(data_loader, th.utils.data.DataLoader)
-        super().__init__(data_loader)
+        self.data_loader = data_loader
 
 
 class TorchLoss(AbstractLoss):
@@ -88,6 +115,7 @@ class TorchModel(AbstractModel):
     """An implementation of AbstractModel for Torch."""
 
     def __init__(self, model: nn.Module):
+        assert isinstance(model, nn.Module)
         self.model = model
 
     def get_state(self) -> AbstractModelState:
