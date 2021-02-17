@@ -12,11 +12,11 @@
 #
 import os
 import sys
-
+print("haha im RUNNING")
 sys.path.insert(0, os.path.abspath('../..'))
 
 # Generate API
-os.system("sphinx-apidoc -o source/fll ../fll -f")
+os.system("sphinx-apidoc -o fll ../../fll -f")
 
 # -- Project information -----------------------------------------------------
 
