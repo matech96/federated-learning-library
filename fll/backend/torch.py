@@ -98,7 +98,10 @@ class TorchBackendFactory(AbstractBackendFactory):
 
 
 class TorchDataLoader(AbstractDataLoader):
-    """An implementation of AbstractDataLoader for PyTorch."""
+    """An implementation of AbstractDataLoader for PyTorch.
+
+    .. seealso:: :class:`~TorchBackendFactory`
+    """
 
     def __init__(self, data_loader: th.utils.data.DataLoader):
         assert isinstance(data_loader, th.utils.data.DataLoader)
@@ -106,7 +109,10 @@ class TorchDataLoader(AbstractDataLoader):
 
 
 class TorchLoss(AbstractLoss):
-    """An implementation of AbstractLoss for PyTorch."""
+    """An implementation of AbstractLoss for PyTorch.
+
+    .. seealso:: :class:`~TorchBackendFactory`
+    """
 
     def __init__(self, loss: Callable[[th.Tensor, th.Tensor], th.Tensor], name: str):
         super().__init__(name)
@@ -114,7 +120,10 @@ class TorchLoss(AbstractLoss):
 
 
 class TorchMetric(AbstractMetric):
-    """An implementation of AbstractMetric for PyTorch."""
+    """An implementation of AbstractMetric for PyTorch.
+
+    .. seealso:: :class:`~TorchBackendFactory`
+    """
 
     def __init__(self, metric: Callable[[th.Tensor, th.Tensor], th.Tensor], name: str):
         super().__init__(name)
@@ -122,7 +131,10 @@ class TorchMetric(AbstractMetric):
 
 
 class TorchModel(AbstractModel):
-    """An implementation of AbstractModel for PyTorch."""
+    """An implementation of AbstractModel for PyTorch.
+
+    .. seealso:: :class:`~TorchBackendFactory`
+    """
 
     def __init__(self, model: nn.Module):
         assert isinstance(model, nn.Module)
@@ -137,7 +149,10 @@ class TorchModel(AbstractModel):
 
 
 class TorchModelState(AbstractModelState):
-    """An implementation of AbstractModelState for PyTorch."""
+    """An implementation of AbstractModelState for PyTorch.
+
+    .. seealso:: :class:`~TorchBackendFactory` :class:`~TorchOptState`
+    """
 
     def __init__(self, state: dict):
         self.state = state
@@ -155,7 +170,10 @@ class TorchModelState(AbstractModelState):
 
 
 class TorchOpt(AbstractOpt):
-    """An implementation of AbstractOpt for PyTorch."""
+    """An implementation of AbstractOpt for PyTorch.
+
+    .. seealso:: :class:`~TorchBackendFactory`
+    """
 
     def __init__(self, opt: optim.Optimizer):
         self.opt = opt
@@ -169,7 +187,10 @@ class TorchOpt(AbstractOpt):
 
 
 class TorchOptState(AbstractOptState):
-    """An implementation of AbstractOpt for PyTorch."""
+    """An implementation of AbstractOpt for PyTorch.
+
+    .. seealso:: :class:`~TorchBackendFactory` :class:`~TorchModelState`
+    """
 
     def __init__(self, state: Dict):
         self.state = state
@@ -243,7 +264,7 @@ def tensor_container_element_eq(value1: Union[dict, list, th.Tensor, Any],
     if isinstance(value1, list) and isinstance(value2, list):
         return tensor_list_eq(value1, value2)
     if isinstance(value1, th.Tensor) and isinstance(value2, th.Tensor):
-        is_equal = th.all(th.tensor(value1 == value2)).item()
+        is_equal = th.all(value1 == value2).item()
         return cast(bool, is_equal)
 
     return value1 == value2
