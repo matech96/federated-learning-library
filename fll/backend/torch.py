@@ -32,7 +32,7 @@ class TorchBackendFactory(AbstractBackendFactory):
         >>> from fll.backend.torch import TorchBackendFactory
         >>> l = TorchBackendFactory.create_loss(nn.MSELoss(), "mse")
         >>> l.loss(th.tensor([1.0]), th.tensor([1.0]))
-        tensor(0.)
+        tensor(0.0)
 
         :param loss: PyTorch loss function.
         :param name: Name of the loss function.
