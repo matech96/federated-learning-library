@@ -1,6 +1,6 @@
 [MASTER]
 extension-pkg-whitelist=numpy,torch
-disable=C0114,R0903,E1102 # E1102: because of 'th.tensor is not callable' error
+disable=R0903,E1102 # E1102: because of 'th.tensor is not callable' error
 
 [TYPECHECK]
 ignored-modules=numpy,torch

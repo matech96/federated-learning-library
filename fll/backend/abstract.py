@@ -1,3 +1,6 @@
+"""Our code supports multiple deep learning frameworks. This module describes the interfaces, that we have to create
+for a framework."""
+
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from pathlib import Path

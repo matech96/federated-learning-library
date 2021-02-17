@@ -1,3 +1,5 @@
+"""This module realises the interfaces for PyTorch."""
+
 from __future__ import annotations
 from pathlib import Path
 from typing import Callable, Dict, Union, Any, cast
