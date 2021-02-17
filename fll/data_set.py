@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from typing import List, Dict
 
-from .backend import AbstractDataLoader
+from .backend.abstract import AbstractDataLoader
 
 
 class DataSet(ABC):
