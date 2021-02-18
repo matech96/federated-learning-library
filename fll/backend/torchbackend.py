@@ -143,6 +143,24 @@ class TorchBackendOperations(AbstractBackendOperations):
                 metric_values[metric.name].append(metric.metric(outputs, targets))
         return {k: float(np.mean(v)) for k, v in metric_values.items()}
 
+    @classmethod
+    def eval(cls, model: AbstractModel, data_loader: AbstractDataLoader, metrics: List[AbstractMetric]) \
+            -> Dict[str, float]:
+        assert isinstance(model, TorchModel)
+        assert isinstance(data_loader, TorchDataLoader)
+        metric_values: Dict[str, list] = defaultdict(list)
+
+        model.model = model.model.to(cls.device)
+        model.model.train()
+
+        for inputs, targets in data_loader.data_loader:
+            inputs, targets = inputs.to(cls.device), targets.to(cls.device)
+            outputs = model.model(inputs)
+            for metric in metrics:
+                assert isinstance(metric, TorchMetric)
+                metric_values[metric.name].append(metric.metric(outputs, targets))
+        return {k: float(np.mean(v)) for k, v in metric_values.items()}
+
 
 class TorchDataLoader(AbstractDataLoader):
     """An implementation of AbstractDataLoader for PyTorch.

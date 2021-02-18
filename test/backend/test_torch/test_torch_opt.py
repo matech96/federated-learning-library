@@ -1,12 +1,12 @@
 import torch as th
 from fll.backend.torchbackend import TorchOpt
 
-from . import util
+from . import test_torch_util
 
 
 class TestTorchOpt:
     def test_state_storage(self):
-        m = util.SimpleModel()
+        m = test_torch_util.SimpleModel()
         o1 = th.optim.Adam(params=m.parameters())
         o2 = th.optim.Adam(params=m.parameters(), lr=1)
         warped_o1 = TorchOpt(o1)
@@ -15,7 +15,7 @@ class TestTorchOpt:
         assert warped_o1.get_state() != warped_o2.get_state()
 
     def test_load_save(self):
-        m = util.SimpleModel()
+        m = test_torch_util.SimpleModel()
         o = th.optim.Adam(params=m.parameters())
         o2 = th.optim.Adam(params=m.parameters(), lr=1)
         warped_o = TorchOpt(o)

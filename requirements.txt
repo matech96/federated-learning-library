@@ -1,5 +1,4 @@
-# numpy==1.18.4 # tensorflow-federated
-numpy==1.20.1
+numpy==1.18.4 # tensorflow-federated
 attrs==19.3.0 # tensorflow-federated
 # pytest==6.1.1
 comet-ml==3.3.3

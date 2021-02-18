@@ -3,12 +3,12 @@ import torch as th
 
 from fll.backend.torchbackend import TorchOptState
 
-from . import util
+from . import test_torch_util
 
 
 class TestTorchOptState:
     def test_save_load_diff_hyperparameter(self, tmp_path):
-        m = util.SimpleModel()
+        m = test_torch_util.SimpleModel()
         o1 = th.optim.Adam(params=m.parameters())
         state1 = TorchOptState(deepcopy(o1.state_dict()))
         path1 = tmp_path / "opt1.pt"
@@ -27,7 +27,7 @@ class TestTorchOptState:
         assert state2 != loaded_state1
 
     def test_save_load_training(self, tmp_path):
-        provider = util.SimpleProvider()
+        provider = test_torch_util.SimpleProvider()
 
         state1 = TorchOptState(deepcopy(provider.opt.state_dict()))
         path1 = tmp_path / "opt1.pt"
