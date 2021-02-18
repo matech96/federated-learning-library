@@ -20,7 +20,7 @@ class TestTorchBackendOperations:
         prov = SignProvider(1000)
         res = TorchBackendOperations.eval(prov.model, prov.dl, prov.metrics)
         assert 0.49 < res["Accuracy"] < 0.5
-        for i in range(10):
+        for _ in range(10):
             TorchBackendOperations.train_epoch(prov.model, prov.opt, prov.loss, prov.dl, prov.metrics)
         res = TorchBackendOperations.eval(prov.model, prov.dl, prov.metrics)
         assert 0.98 < res["Accuracy"]
