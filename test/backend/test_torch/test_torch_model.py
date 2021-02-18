@@ -1,4 +1,4 @@
-from fll.backend.torch import TorchModel
+from fll.backend.torchbackend import TorchModel
 
 from . import util
 

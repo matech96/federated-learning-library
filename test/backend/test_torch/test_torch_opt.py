@@ -1,5 +1,5 @@
 import torch as th
-from fll.backend.torch import TorchOpt
+from fll.backend.torchbackend import TorchOpt
 
 from . import util
 

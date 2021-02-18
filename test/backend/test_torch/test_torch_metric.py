@@ -1,6 +1,6 @@
 from torch import nn
 
-from fll.backend.torch import TorchMetric
+from fll.backend.torchbackend import TorchMetric
 
 
 class TestTorchMetric:

@@ -1,7 +1,7 @@
 import torch as th
 from torch import nn
 
-from fll.backend.torch import TorchBackendFactory, tensor_dict_eq
+from fll.backend.torchbackend import TorchBackendFactory, tensor_dict_eq
 
 from . import util
 

@@ -1,14 +1,17 @@
 """This module realises the interfaces for PyTorch."""
 
 from __future__ import annotations
-from pathlib import Path
-from typing import Callable, Dict, Union, Any, cast
 
+from collections import defaultdict
+from pathlib import Path
+from typing import Callable, Dict, Union, Any, cast, List
+
+import numpy as np
 import torch as th
 from torch import nn, optim
 
 from fll.backend.abstract import AbstractBackendFactory, AbstractDataLoader, AbstractLoss, AbstractMetric, \
-    AbstractModel, AbstractModelState, AbstractOptState, AbstractOpt
+    AbstractModel, AbstractModelState, AbstractOptState, AbstractOpt, AbstractBackendOperations
 
 
 class TorchBackendFactory(AbstractBackendFactory):
@@ -31,7 +34,7 @@ class TorchBackendFactory(AbstractBackendFactory):
 
         >>> import torch as th
         >>> from torch import nn
-        >>> from fll.backend.torch import TorchBackendFactory
+        >>> from fll.backend.torchbackend import TorchBackendFactory
         >>> l = TorchBackendFactory.create_loss(nn.MSELoss(), "mse")
         >>> l.loss(th.tensor([1.0]), th.tensor([1.0]))
         tensor(0.)
@@ -68,6 +71,7 @@ class TorchBackendFactory(AbstractBackendFactory):
         .. doctest::
             :options: +SKIP
 
+            >>>model: nn.Module
             >>>TorchBackendFactory.create_model_state(model.state_dict())
 
         :param model_state: PyTorch model state.
@@ -97,6 +101,47 @@ class TorchBackendFactory(AbstractBackendFactory):
         :return: Wrapped optimizer state.
         """
         return TorchOptState(opt_state)
+
+
+class TorchBackendOperations(AbstractBackendOperations):
+    """PyTorch specific calculations.
+
+    """
+    device = th.device("cuda" if th.cuda.is_available() else "cpu")
+
+    @classmethod
+    def set_device(cls, device: str):
+        """Changes the device, that is used for training.
+
+        :param device: The name of the device
+        """
+        cls.device = th.device(device)
+
+    @classmethod
+    def train_epoch(cls, model: AbstractModel, opt: AbstractOpt, loss: AbstractLoss, data_loader: AbstractDataLoader,
+                    metrics: List[AbstractMetric]) -> Dict[str, float]:
+        assert isinstance(model, TorchModel)
+        assert isinstance(opt, TorchOpt)
+        assert isinstance(loss, TorchLoss)
+        assert isinstance(data_loader, TorchDataLoader)
+        metric_values: Dict[str, list] = defaultdict(list)
+
+        model.model = model.model.to(cls.device)
+        model.model.train()
+
+        for inputs, targets in data_loader.data_loader:
+            inputs, targets = inputs.to(cls.device), targets.to(cls.device)
+            opt.opt.zero_grad()
+            outputs = model.model(inputs)
+            loss_value = loss.loss(outputs, targets)
+            loss_value.backward()
+            opt.opt.step()
+
+            metric_values["loss"] += loss_value.flatten().tolist()
+            for metric in metrics:
+                assert isinstance(metric, TorchMetric)
+                metric_values[metric.name].append(metric.metric(outputs, targets))
+        return {k: float(np.mean(v)) for k, v in metric_values.items()}
 
 
 class TorchDataLoader(AbstractDataLoader):
@@ -270,3 +315,15 @@ def tensor_container_element_eq(value1: Union[dict, list, th.Tensor, Any],
         return cast(bool, is_equal)
 
     return value1 == value2
+
+
+def binarry_accuracy(prediction: th.Tensor, target: th.Tensor) -> th.Tensor:
+    """Calculate the accuracy, when there are two classes (not compatible with one-hot encoded vectors).
+
+    :param prediction: Predicted classes.
+    :param target: Target classes.
+    :return: Accuracy.
+    """
+    b_pred = prediction > 0.5
+    b_targ = target > 0.5
+    return th.mean((b_pred == b_targ).to(th.float32))

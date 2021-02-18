@@ -22,6 +22,7 @@ class AbstractBackendFactory(ABC):
         :param data_loader: Deep learning framework specific data loader.
         :return: Wrapped data loader.
         """
+        raise NotImplementedError()
 
     @classmethod
     @abstractmethod
@@ -32,6 +33,7 @@ class AbstractBackendFactory(ABC):
         :param name: Name of the loss function.
         :return: Wrapped loss function.
         """
+        raise NotImplementedError()
 
     @classmethod
     @abstractmethod
@@ -42,6 +44,7 @@ class AbstractBackendFactory(ABC):
         :param name: Name of the metric.
         :return: Wrapped metric.
         """
+        raise NotImplementedError()
 
     @classmethod
     @abstractmethod
@@ -51,6 +54,7 @@ class AbstractBackendFactory(ABC):
         :param model: Deep learning framework specific model.
         :return: Wrapped model.
         """
+        raise NotImplementedError()
 
     @classmethod
     @abstractmethod
@@ -60,6 +64,7 @@ class AbstractBackendFactory(ABC):
         :param model_state: Deep learning framework specific model state.
         :return: Wrapped model state.
         """
+        raise NotImplementedError()
 
     @classmethod
     @abstractmethod
@@ -69,6 +74,7 @@ class AbstractBackendFactory(ABC):
         :param opt: Deep learning framework specific optimizer.
         :return: Wrapped optimizer.
         """
+        raise NotImplementedError()
 
     @classmethod
     @abstractmethod
@@ -78,44 +84,47 @@ class AbstractBackendFactory(ABC):
         :param opt_state: Deep learning framework specific optimizer state.
         :return: Wrapped optimizer state.
         """
+        raise NotImplementedError()
 
 
 class AbstractBackendOperations(ABC):
-    """The deep learning framework specific calculations, that can't be linked to a specific class are collected in
+    """The deep learning framework specific calculations - that can't be linked to a specific class - are collected in
     this class. Needs to be inherited for a specific framework.
-
 
     .. seealso:: :class:`~AbstractBackendFactory`
     """
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def train_epoch(model: AbstractModel, opt: AbstractOpt, loss: AbstractLoss,  # noqa: R0913
-                    data: AbstractDataLoader, metrics: List[AbstractMetric]) -> Dict[str, float]:  # noqa: R0913
+    def train_epoch(cls, model: AbstractModel, opt: AbstractOpt, loss: AbstractLoss,  # noqa: R0913
+                    data_loader: AbstractDataLoader, metrics: List[AbstractMetric]) -> Dict[str, float]:  # noqa: R0913
         """Trains the model for 1 round.
 
         :param model: The model to be trained.
         :param opt: The optimization algorithm.
         :param loss: The loss function.
-        :param data: The training data.
+        :param data_loader: The training data.
         :param metrics: The metrics to be measured.
         :return: Dictionary, where the key is the name of the metric and the value is a float or int.
         """
+        raise NotImplementedError()
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def eval(model: AbstractModel, data: AbstractDataLoader, metrics: List[AbstractMetric]) -> Dict[str, float]:
+    def eval(cls, model: AbstractModel, data_loader: AbstractDataLoader, metrics: List[AbstractMetric]) \
+            -> Dict[str, float]:
         """Evaluates the model on the provided data.
 
         :param model: Model to be evaluated.
-        :param data: Data to evaluate on. (Should include preprocessing.)
+        :param data_loader: Data to evaluate on. (Should include preprocessing.)
         :param metrics: Metrics of the evaluation.
         :return: Dictionary, where the key is the name of the metric and the value is a float or int.
         """
+        raise NotImplementedError()
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def cumulative_avg_model_state(state_0: Optional[AbstractModelState], state_1: AbstractModelState,
+    def cumulative_avg_model_state(cls, state_0: Optional[AbstractModelState], state_1: AbstractModelState,
                                    n_states_0: int) -> AbstractModelState:
         """This function is useful to calculate the average of many model states, but without needing to keep all of
         them in memory. With this function you only need two model states simultaneously to calculate the average.
@@ -125,10 +134,11 @@ class AbstractBackendOperations(ABC):
         :param n_states_0: Number of states averaged in state_0.
         :return: The uniform average of all the states in state_0 and state_1.
         """
+        raise NotImplementedError()
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def cumulative_avg_opt_state(state_0: Optional[AbstractOptState], state_1: AbstractOptState,
+    def cumulative_avg_opt_state(cls, state_0: Optional[AbstractOptState], state_1: AbstractOptState,
                                  n_states_0: int) -> AbstractOptState:
         """This function is useful to calculate the average of many optimizer states, but without needing to keep all of
         them in memory. With this function you only need two optimizer states simultaneously to calculate the average.
@@ -138,6 +148,7 @@ class AbstractBackendOperations(ABC):
         :param n_states_0: Number of states averaged in state_0.
         :return: The uniform average of all the states in state_0 and state_1.
         """
+        raise NotImplementedError()
 
 
 class AbstractDataLoader(ABC):
@@ -207,6 +218,7 @@ class AbstractModelState(ABC):
 
     .. seealso:: :class:`~AbstractBackendFactory` :class:`~AbstractOptState`
     """
+
     @classmethod
     @abstractmethod
     def load(cls, path: Path) -> AbstractModelState:
@@ -252,6 +264,7 @@ class AbstractOptState(ABC):
 
     .. seealso:: :class:`~AbstractBackendFactory` :class:`~AbstractModelState`
     """
+
     @classmethod
     @abstractmethod
     def load(cls, path: Path) -> AbstractOptState:

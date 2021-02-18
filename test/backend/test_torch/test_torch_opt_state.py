@@ -1,7 +1,7 @@
 from copy import deepcopy
 import torch as th
 
-from fll.backend.torch import TorchOptState
+from fll.backend.torchbackend import TorchOptState
 
 from . import util
 

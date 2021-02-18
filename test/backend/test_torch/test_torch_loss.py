@@ -1,6 +1,6 @@
 from torch import nn
 
-from fll.backend.torch import TorchLoss
+from fll.backend.torchbackend import TorchLoss
 
 
 class TestTorchLoss:
