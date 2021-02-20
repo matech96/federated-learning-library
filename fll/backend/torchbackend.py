@@ -305,7 +305,6 @@ def tensor_dict_eq(dict1: dict, dict2: dict) -> bool:
 
     for (key1, value1), (key2, value2) in zip(dict1.items(), dict2.items()):
         key_equal = key1 == key2
-        print(key1)
         value_equal = tensor_container_element_eq(value1, value2)
 
         if (not key_equal) or (not value_equal):
