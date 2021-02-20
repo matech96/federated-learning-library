@@ -48,6 +48,24 @@ class SignModel(nn.Module):
         return self.fc(x)
 
 
+class SignModelComplex(nn.Module):
+    def __init__(self, n_features: int):
+        super().__init__()
+
+        self.fc0 = nn.Linear(n_features, n_features)
+        self.batchnorm = nn.BatchNorm1d(n_features)
+        self.relu = nn.LeakyReLU()
+        self.drop = nn.Dropout()
+        self.fc1 = nn.Linear(n_features, 1)
+
+    def forward(self, x):
+        x = self.fc0(x)
+        # x = self.batchnorm(x)
+        x = self.relu(x)
+        x = self.drop(x)
+        return self.fc1(x)
+
+
 class SignDataSet(th.utils.data.Dataset):
     def __init__(self, length: int, n_features: int):
         self.length = length
@@ -62,10 +80,10 @@ class SignDataSet(th.utils.data.Dataset):
 
 
 class SignProvider:
-    def __init__(self, length: int = 10, n_features: int = 10):
+    def __init__(self, length: int = 10, n_features: int = 10, is_complex_model: bool = False):
         ds = SignDataSet(length=length, n_features=n_features)
         dl = th.utils.data.DataLoader(ds, batch_size=2)
-        model = SignModel(n_features)
+        model = SignModelComplex(n_features) if is_complex_model else SignModel(n_features)
         opt = th.optim.SGD(lr=0.1, params=model.parameters())
         loss = th.nn.BCEWithLogitsLoss()
         acc = binarry_accuracy
