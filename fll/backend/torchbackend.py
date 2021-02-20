@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from pathlib import Path
-from typing import Callable, Dict, Union, Any, cast, List, Optional
+from typing import Callable, Dict, Union, Any, List, Optional
 
 import numpy as np
 import torch as th
