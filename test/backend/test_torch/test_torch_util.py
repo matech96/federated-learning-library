@@ -60,7 +60,7 @@ class SignModelComplex(nn.Module):
 
     def forward(self, x):
         x = self.fc0(x)
-        # x = self.batchnorm(x)
+        x = self.batchnorm(x)
         x = self.relu(x)
         x = self.drop(x)
         return self.fc1(x)
