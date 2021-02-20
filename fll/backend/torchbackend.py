@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from pathlib import Path
-from typing import Callable, Dict, Union, Any, cast, List
+from typing import Callable, Dict, Union, Any, cast, List, Optional
 
 import numpy as np
 import torch as th
@@ -161,6 +161,26 @@ class TorchBackendOperations(AbstractBackendOperations):
                 metric_values[metric.name].append(metric.metric(outputs, targets))
         return {k: float(np.mean(v)) for k, v in metric_values.items()}
 
+    @classmethod
+    def cumulative_avg_model_state(cls, state_0: Optional[AbstractModelState], state_1: AbstractModelState,
+                                   n_states_0: int) -> TorchModelState:
+        assert isinstance(state_1, TorchModelState)
+        if state_0 is None:
+            assert n_states_0 == 0
+            return state_1
+        assert isinstance(state_0, TorchModelState)
+
+        state_dict_0: Dict[str, th.Tensor] = state_0.state
+        state_dict_1: Dict[str, th.Tensor] = state_1.state
+        final_state_dict = {}
+        with th.no_grad():
+            for parameter_name in state_dict_0.keys():
+                param_0 = state_dict_0[parameter_name]
+                param_1 = state_dict_1[parameter_name]
+                final_state_dict[parameter_name] = \
+                    (((param_0 * n_states_0) + param_1) / (n_states_0 + 1)).to(param_0.dtype)
+        return TorchBackendFactory.create_model_state(final_state_dict)
+
 
 class TorchDataLoader(AbstractDataLoader):
     """An implementation of AbstractDataLoader for PyTorch.
@@ -205,7 +225,7 @@ class TorchModel(AbstractModel):
         assert isinstance(model, nn.Module)
         self.model = model
 
-    def get_state(self) -> AbstractModelState:
+    def get_state(self) -> TorchModelState:
         return TorchModelState(self.model.state_dict())
 
     def load_state(self, state: AbstractModelState):
@@ -219,11 +239,11 @@ class TorchModelState(AbstractModelState):
     .. seealso:: :class:`~TorchBackendFactory` :class:`~TorchOptState`
     """
 
-    def __init__(self, state: dict):
-        self.state = state
+    def __init__(self, state: Dict[str, th.Tensor]):
+        self.state: Dict[str, th.Tensor] = state
 
     @classmethod
-    def load(cls, path: Path) -> AbstractModelState:
+    def load(cls, path: Path) -> TorchModelState:
         return TorchModelState(th.load(path))
 
     def __eq__(self, other):
@@ -243,7 +263,7 @@ class TorchOpt(AbstractOpt):
     def __init__(self, opt: optim.Optimizer):
         self.opt = opt
 
-    def get_state(self) -> AbstractOptState:
+    def get_state(self) -> TorchOptState:
         return TorchOptState(self.opt.state_dict())
 
     def load_state(self, state: AbstractOptState):
@@ -261,7 +281,7 @@ class TorchOptState(AbstractOptState):
         self.state = state
 
     @classmethod
-    def load(cls, path: Path) -> AbstractOptState:
+    def load(cls, path: Path) -> TorchOptState:
         return TorchOptState(th.load(path))
 
     def __eq__(self, other) -> bool:
@@ -329,8 +349,7 @@ def tensor_container_element_eq(value1: Union[dict, list, th.Tensor, Any],
     if isinstance(value1, list) and isinstance(value2, list):
         return tensor_list_eq(value1, value2)
     if isinstance(value1, th.Tensor) and isinstance(value2, th.Tensor):
-        is_equal = th.all(value1 == value2).item()
-        return cast(bool, is_equal)
+        return th.allclose(value1, value2)
 
     return value1 == value2
 
