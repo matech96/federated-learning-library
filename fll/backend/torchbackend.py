@@ -166,20 +166,45 @@ class TorchBackendOperations(AbstractBackendOperations):
                                    n_states_0: int) -> TorchModelState:
         assert isinstance(state_1, TorchModelState)
         if state_0 is None:
-            assert n_states_0 == 0
             return state_1
         assert isinstance(state_0, TorchModelState)
+        new_state = cls.cumulative_avg_state(state_0.state, state_1.state, n_states_0)
+        return TorchBackendFactory.create_model_state(new_state)
 
-        state_dict_0: Dict[str, th.Tensor] = state_0.state
-        state_dict_1: Dict[str, th.Tensor] = state_1.state
+    @classmethod
+    def cumulative_avg_opt_state(cls, state_0: Optional[AbstractOptState], state_1: AbstractOptState,
+                                 n_states_0: int) -> TorchOptState:
+        assert isinstance(state_1, TorchOptState)
+        if state_0 is None:
+            return state_1
+        assert isinstance(state_0, TorchOptState)
+        opt_adaptive_state_0: Dict[int, Dict] = state_0.state["state"]
+        opt_adaptive_state_1: Dict[int, Dict] = state_1.state["state"]
+        assert len(opt_adaptive_state_0) == len(opt_adaptive_state_1)
+        new_adaptive_state = {}
+        for k in opt_adaptive_state_0.keys():
+            new_adaptive_state[k] = cls.cumulative_avg_state(opt_adaptive_state_0[k], opt_adaptive_state_1[k],
+                                                             n_states_0)
+        new_state_dict = {'state': new_adaptive_state, 'param_groups': state_0.state['param_groups']}
+        return TorchBackendFactory.create_opt_state(new_state_dict)
+
+    @staticmethod
+    def cumulative_avg_state(state_dict_0: Dict[str, Union[th.Tensor, int]],
+                             state_dict_1: Dict[str, Union[th.Tensor, int]],
+                             n_states_0: int) -> Dict[str, Union[th.Tensor, int]]:
         final_state_dict = {}
         with th.no_grad():
             for parameter_name in state_dict_0.keys():
                 param_0 = state_dict_0[parameter_name]
                 param_1 = state_dict_1[parameter_name]
-                final_state_dict[parameter_name] = \
-                    (((param_0 * n_states_0) + param_1) / (n_states_0 + 1)).to(param_0.dtype)
-        return TorchBackendFactory.create_model_state(final_state_dict)
+                value = (((param_0 * n_states_0) + param_1) / (n_states_0 + 1))
+                if isinstance(param_0, th.Tensor):
+                    final_state_dict[parameter_name] = value.to(param_0.dtype)
+                elif isinstance(param_0, int):
+                    final_state_dict[parameter_name] = int(value)
+                else:
+                    raise TypeError()
+        return final_state_dict
 
 
 class TorchDataLoader(AbstractDataLoader):

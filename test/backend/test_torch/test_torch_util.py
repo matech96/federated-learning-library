@@ -1,3 +1,5 @@
+from typing import Callable
+
 import torch as th
 from torch import nn
 
@@ -73,18 +75,19 @@ class SignDataSet(th.utils.data.Dataset):
         self.y = (th.sum(self.x, 1) > 0).to(th.float32)
 
     def __getitem__(self, item):
-        return self.x[item, ], self.y[[item], ]
+        return self.x[item,], self.y[[item],]
 
     def __len__(self):
         return self.length
 
 
 class SignProvider:
-    def __init__(self, length: int = 10, n_features: int = 10, is_complex_model: bool = False):
+    def __init__(self, length: int = 10, n_features: int = 10, is_complex_model: bool = False,
+                 opt_class: Callable[..., th.optim.Optimizer] = th.optim.SGD):
         ds = SignDataSet(length=length, n_features=n_features)
         dl = th.utils.data.DataLoader(ds, batch_size=2)
         model = SignModelComplex(n_features) if is_complex_model else SignModel(n_features)
-        opt = th.optim.SGD(lr=0.1, params=model.parameters())
+        opt = opt_class(lr=0.1, params=model.parameters())
         loss = th.nn.BCEWithLogitsLoss()
         acc = binarry_accuracy
 
