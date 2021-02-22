@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from pathlib import Path
-from typing import Callable, Dict, Union, Any, List, Optional
+from typing import Callable, Dict, Union, Any, List, Optional, TypedDict, Mapping, cast, MutableMapping, Sequence
 
 import numpy as np
 import torch as th
@@ -65,7 +65,7 @@ class TorchBackendFactory(AbstractBackendFactory):
         return TorchModel(model)
 
     @classmethod
-    def create_model_state(cls, model_state: dict) -> TorchModelState:
+    def create_model_state(cls, model_state: TorchStateDict) -> TorchModelState:
         """Stores the model state in an :class:`~TorchModelState`.
 
         .. doctest::
@@ -89,7 +89,7 @@ class TorchBackendFactory(AbstractBackendFactory):
         return TorchOpt(opt)
 
     @classmethod
-    def create_opt_state(cls, opt_state: dict) -> TorchOptState:
+    def create_opt_state(cls, opt_state: TorchOptStateDict) -> TorchOptState:
         """Stores the optimizer state in an :class:`~TorchOptState`.
 
         .. doctest::
@@ -168,7 +168,8 @@ class TorchBackendOperations(AbstractBackendOperations):
         if state_0 is None:
             return state_1
         assert isinstance(state_0, TorchModelState)
-        new_state = cls.cumulative_avg_state(state_0.state, state_1.state, n_states_0)
+        new_state = cls._cumulative_avg_state(state_0.state, state_1.state, n_states_0)
+        new_state = cast(TorchStateDict, new_state)
         return TorchBackendFactory.create_model_state(new_state)
 
     @classmethod
@@ -178,27 +179,28 @@ class TorchBackendOperations(AbstractBackendOperations):
         if state_0 is None:
             return state_1
         assert isinstance(state_0, TorchOptState)
-        opt_adaptive_state_0: Dict[int, Dict] = state_0.state["state"]
-        opt_adaptive_state_1: Dict[int, Dict] = state_1.state["state"]
+        opt_adaptive_state_0 = state_0.state["state"]
+        opt_adaptive_state_1 = state_1.state["state"]
         assert len(opt_adaptive_state_0) == len(opt_adaptive_state_1)
         new_adaptive_state = {}
         for k in opt_adaptive_state_0.keys():
-            new_adaptive_state[k] = cls.cumulative_avg_state(opt_adaptive_state_0[k], opt_adaptive_state_1[k],
-                                                             n_states_0)
-        new_state_dict = {'state': new_adaptive_state, 'param_groups': state_0.state['param_groups']}
+            new_adaptive_state[k] = cls._cumulative_avg_state(opt_adaptive_state_0[k], opt_adaptive_state_1[k],
+                                                              n_states_0)
+        new_state_dict: TorchOptStateDict = {'state': new_adaptive_state, 'param_groups': state_0.state['param_groups']}
         return TorchBackendFactory.create_opt_state(new_state_dict)
 
     @staticmethod
-    def cumulative_avg_state(state_dict_0: Dict[str, Union[th.Tensor, int]],
-                             state_dict_1: Dict[str, Union[th.Tensor, int]],
-                             n_states_0: int) -> Dict[str, Union[th.Tensor, int]]:
-        final_state_dict = {}
+    def _cumulative_avg_state(state_dict_0: Mapping[str, Union[th.Tensor, int]],
+                              state_dict_1: Mapping[str, Union[th.Tensor, int]],
+                              n_states_0: int) -> Mapping[str, Union[th.Tensor, int]]:
+        final_state_dict: MutableMapping[str, Union[th.Tensor, int]] = {}
         with th.no_grad():
             for parameter_name in state_dict_0.keys():
                 param_0 = state_dict_0[parameter_name]
                 param_1 = state_dict_1[parameter_name]
                 value = (((param_0 * n_states_0) + param_1) / (n_states_0 + 1))
                 if isinstance(param_0, th.Tensor):
+                    assert isinstance(value, th.Tensor)
                     final_state_dict[parameter_name] = value.to(param_0.dtype)
                 elif isinstance(param_0, int):
                     final_state_dict[parameter_name] = int(value)
@@ -255,7 +257,10 @@ class TorchModel(AbstractModel):
 
     def load_state(self, state: AbstractModelState):
         assert isinstance(state, TorchModelState)
-        self.model.load_state_dict(state.state)
+        self.model.load_state_dict(cast(Dict[str, th.Tensor], state.state))
+
+
+TorchStateDict = Mapping[str, th.Tensor]
 
 
 class TorchModelState(AbstractModelState):
@@ -264,8 +269,8 @@ class TorchModelState(AbstractModelState):
     .. seealso:: :class:`~TorchBackendFactory` :class:`~TorchOptState`
     """
 
-    def __init__(self, state: Dict[str, th.Tensor]):
-        self.state: Dict[str, th.Tensor] = state
+    def __init__(self, state: TorchStateDict):
+        self.state: TorchStateDict = state
 
     @classmethod
     def load(cls, path: Path) -> TorchModelState:
@@ -289,11 +294,18 @@ class TorchOpt(AbstractOpt):
         self.opt = opt
 
     def get_state(self) -> TorchOptState:
-        return TorchOptState(self.opt.state_dict())
+        opt_state_dict = cast(TorchOptStateDict, self.opt.state_dict())
+        return TorchOptState(opt_state_dict)
 
     def load_state(self, state: AbstractOptState):
         assert isinstance(state, TorchOptState)
-        self.opt.load_state_dict(state.state)
+        opt_state_dict = cast(Dict, state.state)
+        self.opt.load_state_dict(opt_state_dict)
+
+
+# key: index of the module; value: dict containing opt specific values
+TorchOptModulesStateDict = Mapping[int, Mapping[str, Union[th.Tensor, int]]]
+TorchOptStateDict = TypedDict("TorchOptStateDict", {"state": TorchOptModulesStateDict, "param_groups": Dict[str, Any]})
 
 
 class TorchOptState(AbstractOptState):
@@ -302,8 +314,8 @@ class TorchOptState(AbstractOptState):
     .. seealso:: :class:`~TorchBackendFactory` :class:`~TorchModelState`
     """
 
-    def __init__(self, state: Dict):
-        self.state = state
+    def __init__(self, state: TorchOptStateDict):
+        self.state: TorchOptStateDict = state
 
     @classmethod
     def load(cls, path: Path) -> TorchOptState:
@@ -317,7 +329,7 @@ class TorchOptState(AbstractOptState):
         th.save(self.state, path)
 
 
-def tensor_dict_eq(dict1: dict, dict2: dict) -> bool:
+def tensor_dict_eq(dict1: Mapping, dict2: Mapping) -> bool:
     """Checks the equivalence between 2 dictionaries, that can contain torch Tensors as value. The dictionary can be
     nested with other dictionaries or lists, they will be checked recursively.
 
@@ -338,7 +350,7 @@ def tensor_dict_eq(dict1: dict, dict2: dict) -> bool:
     return True
 
 
-def tensor_list_eq(list1: list, list2: list) -> bool:
+def tensor_list_eq(list1: Sequence, list2: Sequence) -> bool:
     """Checks the equivalence between 2 lists, that can contain torch Tensors as value. The list can be nested with
     other dictionaries and lists, they will be checked recursively. The dictionaries can have torch Tensors as value,
     not as key!
@@ -358,8 +370,8 @@ def tensor_list_eq(list1: list, list2: list) -> bool:
     return True
 
 
-def tensor_container_element_eq(value1: Union[dict, list, th.Tensor, Any],
-                                value2: Union[dict, list, th.Tensor, Any]) -> bool:
+def tensor_container_element_eq(value1: Union[Mapping, Sequence, th.Tensor, Any],
+                                value2: Union[Mapping, Sequence, th.Tensor, Any]) -> bool:
     """ Checks equivalence between the two values and returns a single bool value, if the input is torch Tensor. If
     the input is a dictionary or list, it is recursively checked. The key of a (nested) dictionary can't be Tensor.
 

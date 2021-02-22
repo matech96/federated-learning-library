@@ -74,36 +74,22 @@ class TestTorchBackendOperations:
 
     def test_cumulative_avg_opt_state_same_model(self):
         for opt_class in [th.optim.Adam, partial(th.optim.SGD, momentum=0.9, nesterov=True), th.optim.Adagrad]:
-            prov = SignProvider(is_complex_model=False, opt_class=opt_class)
+            prov = SignProvider(is_complex_model=True, opt_class=opt_class)
             models = [copy.deepcopy(prov.model) for _ in range(10)]
-            opts = [TorchBackendFactory.create_opt(opt_class(lr=0.1, params=model.model.parameters())) for model in models]
+            opts = [TorchBackendFactory.create_opt(opt_class(lr=0.1, params=model.model.parameters())) for model in
+                    models]
             n_processed_states = 0
             running_opt_states = None
             for wrapped_model, wrapped_opt in zip(models, opts):
                 TorchBackendOperations.train_epoch(wrapped_model, wrapped_opt, prov.loss, prov.dl, prov.metrics)
-                wrapped_model_state = wrapped_model.get_state()
                 wrapped_opt_state = wrapped_opt.get_state()
                 running_opt_states = TorchBackendOperations.cumulative_avg_opt_state(running_opt_states,
                                                                                      wrapped_opt_state,
                                                                                      n_processed_states)
                 n_processed_states += 1
 
-            # avg_opt_state = avg_state_dicts([opt.get_state().state["state"].values() for opt in opts])
             for opt in opts:
                 assert opt.get_state() == running_opt_states
-
-        # provs = [SignProvider(is_complex_model=True, opt_class=th.optim.Adam) for _ in range(10)]
-        # cum_state = None
-        # n_states = 0
-        # for prov in provs:
-        #     TorchBackendOperations.train_epoch(prov.model, prov.opt, prov.loss, prov.dl, prov.metrics)
-        #     new_state = prov.model.get_state()
-        #     cum_state = TorchBackendOperations.cumulative_avg_model_state(cum_state, new_state, n_states)
-        #     n_states += 1
-        #
-        # state_dicts = [prov.model.get_state().state for prov in provs]
-        # avg_state = avg_state_dicts(state_dicts)
-        # assert TorchBackendFactory.create_model_state(avg_state) == cum_state
 
 
 def avg_state_dicts(state_dicts):

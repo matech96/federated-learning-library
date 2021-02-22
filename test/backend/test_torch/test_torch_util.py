@@ -57,14 +57,12 @@ class SignModelComplex(nn.Module):
         self.fc0 = nn.Linear(n_features, n_features)
         self.batchnorm = nn.BatchNorm1d(n_features)
         self.relu = nn.LeakyReLU()
-        self.drop = nn.Dropout()
         self.fc1 = nn.Linear(n_features, 1)
 
     def forward(self, x):
         x = self.fc0(x)
         x = self.batchnorm(x)
         x = self.relu(x)
-        x = self.drop(x)
         return self.fc1(x)
 
 
@@ -75,7 +73,7 @@ class SignDataSet(th.utils.data.Dataset):
         self.y = (th.sum(self.x, 1) > 0).to(th.float32)
 
     def __getitem__(self, item):
-        return self.x[item,], self.y[[item],]
+        return self.x[item, ], self.y[[item], ]
 
     def __len__(self):
         return self.length
