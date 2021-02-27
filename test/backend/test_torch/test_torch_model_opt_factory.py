@@ -24,13 +24,3 @@ class TestTorchModelOptFactory:
             if prev_loss is not None:
                 assert loss_value < prev_loss
             prev_loss = loss_value
-
-
-def train_from_torch(model: nn.Module, opt: optim.Optimizer, loss: Callable[[th.Tensor, th.Tensor], th.Tensor],
-                     data_loader: th.utils.data.DataLoader):
-    dl = TorchBackendFactory.create_data_loader(data_loader)
-    model = TorchBackendFactory.create_model(model)
-    loss = TorchBackendFactory.create_loss(loss, 'bce')
-    opt = TorchBackendFactory.create_opt(opt)
-    return TorchBackendOperations.train_epoch(model=model, opt=opt, loss=loss, data_loader=dl,
-                                              metrics=[])
