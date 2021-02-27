@@ -1,7 +1,5 @@
-from typing import Callable
-
 import torch as th
-from torch import optim, nn
+from torch import optim
 
 from fll.backend.torchbackend import TorchModelOptFactory, TorchBackendOperations, TorchBackendFactory
 
