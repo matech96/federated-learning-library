@@ -4,14 +4,14 @@ from __future__ import annotations
 
 from collections import defaultdict
 from pathlib import Path
-from typing import Callable, Dict, Union, Any, List, Optional, TypedDict, Mapping, cast, MutableMapping, Sequence
+from typing import Callable, Dict, Union, Any, List, Optional, TypedDict, Mapping, cast, MutableMapping, Sequence, Tuple
 
 import numpy as np
 import torch as th
 from torch import nn, optim
 
 from fll.backend.abstract import AbstractBackendFactory, AbstractDataLoader, AbstractLoss, AbstractMetric, \
-    AbstractModel, AbstractModelState, AbstractOptState, AbstractOpt, AbstractBackendOperations
+    AbstractModel, AbstractModelState, AbstractOptState, AbstractOpt, AbstractBackendOperations, AbstractModelOptFactory
 
 
 class TorchBackendFactory(AbstractBackendFactory):
@@ -207,6 +207,18 @@ class TorchBackendOperations(AbstractBackendOperations):
                 else:
                     raise TypeError()
         return final_state_dict
+
+
+class TorchModelOptFactory(AbstractModelOptFactory):
+    """An implementation of AbstractModelOptFactory for PyTorch.
+
+    """
+    def make_objects(self) -> Tuple[TorchModel, TorchOpt]:
+        torch_model = self.model_cls()
+        assert isinstance(torch_model, nn.Module)
+        torch_opt = self.opt_cls(torch_model.parameters())
+        assert isinstance(torch_opt, optim.Optimizer)
+        return TorchBackendFactory.create_model(torch_model), TorchBackendFactory.create_opt(torch_opt)
 
 
 class TorchDataLoader(AbstractDataLoader):

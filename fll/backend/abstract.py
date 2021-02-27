@@ -4,7 +4,7 @@ for a framework."""
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Callable, Tuple
 
 
 class AbstractBackendFactory(ABC):
@@ -147,6 +147,26 @@ class AbstractBackendOperations(ABC):
         :param state_1: New state.
         :param n_states_0: Number of states averaged in state_0.
         :return: The uniform average of all the states in state_0 and state_1.
+        """
+        raise NotImplementedError()
+
+
+class AbstractModelOptFactory(ABC):
+    """Abstract class for creating a framework specific model and optimizer."""
+    def __init__(self, model_cls: Callable, opt_cls: Callable):
+        """
+
+        :param model_cls: Callable, that returns the framework specific model.
+        :param opt_cls: Callable, that returns the framework specific optimizer.
+        """
+        self.model_cls = model_cls
+        self.opt_cls = opt_cls
+
+    @abstractmethod
+    def make_objects(self) -> Tuple[AbstractModel, AbstractOpt]:
+        """
+
+        :return: The created model and optimizer in a tuple.
         """
         raise NotImplementedError()
 

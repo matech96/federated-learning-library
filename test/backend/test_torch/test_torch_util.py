@@ -51,7 +51,7 @@ class SignModel(nn.Module):
 
 
 class SignModelComplex(nn.Module):
-    def __init__(self, n_features: int):
+    def __init__(self, n_features: int = 10):
         super().__init__()
 
         self.fc0 = nn.Linear(n_features, n_features)
@@ -67,7 +67,7 @@ class SignModelComplex(nn.Module):
 
 
 class SignDataSet(th.utils.data.Dataset):
-    def __init__(self, length: int, n_features: int):
+    def __init__(self, length: int = 100, n_features: int = 10):
         self.length = length
         self.x = th.randn(length, n_features)
         self.y = (th.sum(self.x, 1) > 0).to(th.float32)
