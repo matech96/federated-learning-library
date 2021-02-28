@@ -3,7 +3,7 @@ from typing import Callable
 import torch as th
 from torch import nn
 
-from fll.backend.torchbackend import TorchBackendFactory, binarry_accuracy
+from fll.backend.torchbackend import TorchBackendFactory, binary_accuracy
 
 
 class SimpleProvider:
@@ -87,7 +87,7 @@ class SignProvider:
         model = SignModelComplex(n_features) if is_complex_model else SignModel(n_features)
         opt = opt_class(lr=0.1, params=model.parameters())
         loss = th.nn.BCEWithLogitsLoss()
-        acc = binarry_accuracy
+        acc = binary_accuracy
 
         self.dl = TorchBackendFactory.create_data_loader(dl)
         self.model = TorchBackendFactory.create_model(model)

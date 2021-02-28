@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from copy import deepcopy
 from pathlib import Path
 from typing import Callable, Dict, Union, Any, List, Optional, TypedDict, Mapping, cast, MutableMapping, Sequence, Tuple
 
@@ -265,7 +266,7 @@ class TorchModel(AbstractModel):
         self.model = model
 
     def get_state(self) -> TorchModelState:
-        return TorchModelState(self.model.state_dict())
+        return TorchModelState(deepcopy(self.model.state_dict()))
 
     def load_state(self, state: AbstractModelState):
         assert isinstance(state, TorchModelState)
@@ -307,7 +308,7 @@ class TorchOpt(AbstractOpt):
 
     def get_state(self) -> TorchOptState:
         opt_state_dict = cast(TorchOptStateDict, self.opt.state_dict())
-        return TorchOptState(opt_state_dict)
+        return TorchOptState(deepcopy(opt_state_dict))
 
     def load_state(self, state: AbstractOptState):
         assert isinstance(state, TorchOptState)
@@ -403,7 +404,7 @@ def tensor_container_element_eq(value1: Union[Mapping, Sequence, th.Tensor, Any]
     return value1 == value2
 
 
-def binarry_accuracy(prediction: th.Tensor, target: th.Tensor) -> th.Tensor:
+def binary_accuracy(prediction: th.Tensor, target: th.Tensor) -> th.Tensor:
     """Calculate the accuracy, when there are two classes (not compatible with one-hot encoded vectors).
 
     :param prediction: Predicted classes.

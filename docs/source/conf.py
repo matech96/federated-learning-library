@@ -12,7 +12,6 @@
 #
 import os
 import sys
-print("haha im RUNNING")
 sys.path.insert(0, os.path.abspath('../..'))
 
 # Generate API
